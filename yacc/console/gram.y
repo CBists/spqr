@@ -143,6 +143,7 @@ func randomHex(n int) (string, error) {
 %type<str> sharding_rule_table_clause
 %type<str> sharding_rule_column_clause
 %type<str> sharding_rule_hash_function_clause
+%type<str> link_dataspace
 
 %type <unlock> unlock_stmt
 %type <lock> lock_stmt
@@ -426,32 +427,18 @@ dataspace_define_stmt:
 	}
 
 sharding_rule_define_stmt:
-	SHARDING RULE any_id sharding_rule_table_clause sharding_rule_argument_list DATASPACE any_id
+	SHARDING RULE any_id sharding_rule_table_clause sharding_rule_argument_list link_dataspace
 	{
-		$$ = &ShardingRuleDefinition{ID: $3, TableName: $4, Entries: $5, Dataspace: $7}
+		$$ = &ShardingRuleDefinition{ID: $3, TableName: $4, Entries: $5, Dataspace: $6}
 	}
 	|
-	SHARDING RULE sharding_rule_table_clause sharding_rule_argument_list DATASPACE any_id
+	SHARDING RULE sharding_rule_table_clause sharding_rule_argument_list link_dataspace
 	{
 		str, err := randomHex(6)
 		if err != nil {
 			panic(err)
 		}
-		$$ = &ShardingRuleDefinition{ID:  "shrule"+str, TableName: $3, Entries: $4, Dataspace: $6}
-	}
-	|
-	SHARDING RULE any_id sharding_rule_table_clause sharding_rule_argument_list
-	{
-		$$ = &ShardingRuleDefinition{ID: $3, TableName: $4, Entries: $5, Dataspace: "default"}
-	}
-	|
-	SHARDING RULE sharding_rule_table_clause sharding_rule_argument_list
-	{
-		str, err := randomHex(6)
-		if err != nil {
-			panic(err)
-		}
-		$$ = &ShardingRuleDefinition{ID:  "shrule"+str, TableName: $3, Entries: $4, Dataspace: "default"}
+		$$ = &ShardingRuleDefinition{ID:  "shrule"+str, TableName: $3, Entries: $4, Dataspace: $5}
 	}
 
 sharding_rule_argument_list: sharding_rule_entry
@@ -499,35 +486,26 @@ sharding_rule_hash_function_clause:
 	}
 	| /*EMPTY*/ { $$ = ""; }
 
+link_dataspace:
+    DATASPACE any_id{
+        $$ = $2
+    }
+    | /* EMPTY */ { $$ = "default" }
+
 
 key_range_define_stmt:
-	KEY RANGE any_id FROM any_val TO any_val ROUTE TO any_id DATASPACE any_id
+	KEY RANGE any_id FROM any_val TO any_val ROUTE TO any_id link_dataspace
 	{
-		$$ = &KeyRangeDefinition{LowerBound: []byte($5), UpperBound: []byte($7), ShardID: $10, KeyRangeID: $3, Dataspace: $12}
+		$$ = &KeyRangeDefinition{LowerBound: []byte($5), UpperBound: []byte($7), ShardID: $10, KeyRangeID: $3, Dataspace: $11}
 	}
-	|
-	KEY RANGE FROM any_val TO any_val ROUTE TO any_id DATASPACE any_id
+	| KEY RANGE FROM any_val TO any_val ROUTE TO any_id link_dataspace
 	{
 		str, err := randomHex(6)
 		if err != nil {
 			panic(err)
 		}
-		$$ = &KeyRangeDefinition{LowerBound: []byte($4), UpperBound: []byte($6), ShardID: $9, KeyRangeID: "kr"+str, Dataspace: $11}
+		$$ = &KeyRangeDefinition{LowerBound: []byte($4), UpperBound: []byte($6), ShardID: $9, KeyRangeID: "kr"+str, Dataspace: $10}
 	}
-	|
-	KEY RANGE any_id FROM any_val TO any_val ROUTE TO any_id
-    {
-        $$ = &KeyRangeDefinition{LowerBound: []byte($5), UpperBound: []byte($7), ShardID: $10, KeyRangeID: $3, Dataspace: "default"}
-    }
-    |
-    KEY RANGE FROM any_val TO any_val ROUTE TO any_id
-    {
-        str, err := randomHex(6)
-        if err != nil {
-            panic(err)
-        }
-        $$ = &KeyRangeDefinition{LowerBound: []byte($4), UpperBound: []byte($6), ShardID: $9, KeyRangeID: "kr"+str, Dataspace: "default"}
-    }
 
 
 shard_define_stmt:
