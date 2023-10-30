@@ -622,12 +622,5 @@ unregister_router_stmt:
     {
         $$ = &UnregisterRouter{ID: `*`}
     }
-
-link_dataspace:
-    DATASPACE any_id
-    {
-        $$ = $2
-    }
-
 %%
 
