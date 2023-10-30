@@ -429,7 +429,7 @@ dataspace_define_stmt:
 sharding_rule_define_stmt:
 	SHARDING RULE any_id sharding_rule_table_clause sharding_rule_argument_list link_dataspace
 	{
-		$$ = &ShardingRuleDefinition{ID: $3, TableName: $4, Entries: $5, Dataspace: $5}
+		$$ = &ShardingRuleDefinition{ID: $3, TableName: $4, Entries: $5, Dataspace: $6}
 	}
 	|
 	SHARDING RULE sharding_rule_table_clause sharding_rule_argument_list link_dataspace
@@ -513,7 +513,7 @@ key_range_define_stmt:
 		if err != nil {
 			panic(err)
 		}
-		$$ = &KeyRangeDefinition{LowerBound: []byte($4), UpperBound: []byte($6), ShardID: $9, KeyRangeID: "kr"+str, Dataspace: $11}
+		$$ = &KeyRangeDefinition{LowerBound: []byte($4), UpperBound: []byte($6), ShardID: $9, KeyRangeID: "kr"+str, Dataspace: $10}
 	}
 	|
 	KEY RANGE any_id FROM any_val TO any_val ROUTE TO any_id
