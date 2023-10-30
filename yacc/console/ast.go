@@ -73,6 +73,7 @@ type ShardingRuleDefinition struct {
 	ID        string
 	TableName string
 	Entries   []ShardingRuleEntry
+	Dataspace string
 }
 
 type ShardingRuleEntry struct {
@@ -85,6 +86,7 @@ type KeyRangeDefinition struct {
 	UpperBound []byte
 	ShardID    string
 	KeyRangeID string
+	Dataspace  string
 }
 
 type ShardDefinition struct {
