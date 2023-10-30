@@ -141,7 +141,6 @@ func randomHex(n int) (string, error) {
 %type<shruleEntry> sharding_rule_entry
 
 %type<str> sharding_rule_table_clause
-%type<str> link_dataspace
 %type<str> sharding_rule_column_clause
 %type<str> sharding_rule_hash_function_clause
 
