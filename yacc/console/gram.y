@@ -427,18 +427,18 @@ dataspace_define_stmt:
 	}
 
 sharding_rule_define_stmt:
-	SHARDING RULE any_id sharding_rule_table_clause sharding_rule_argument_list link_dataspace
+	SHARDING RULE any_id sharding_rule_table_clause sharding_rule_argument_list DATASPACE any_id
 	{
-		$$ = &ShardingRuleDefinition{ID: $3, TableName: $4, Entries: $5, Dataspace: $6}
+		$$ = &ShardingRuleDefinition{ID: $3, TableName: $4, Entries: $5, Dataspace: $7}
 	}
 	|
-	SHARDING RULE sharding_rule_table_clause sharding_rule_argument_list link_dataspace
+	SHARDING RULE sharding_rule_table_clause sharding_rule_argument_list DATASPACE any_id
 	{
 		str, err := randomHex(6)
 		if err != nil {
 			panic(err)
 		}
-		$$ = &ShardingRuleDefinition{ID:  "shrule"+str, TableName: $3, Entries: $4, Dataspace: $5}
+		$$ = &ShardingRuleDefinition{ID:  "shrule"+str, TableName: $3, Entries: $4, Dataspace: $6}
 	}
 	|
 	SHARDING RULE any_id sharding_rule_table_clause sharding_rule_argument_list
@@ -502,18 +502,18 @@ sharding_rule_hash_function_clause:
 
 
 key_range_define_stmt:
-	KEY RANGE any_id FROM any_val TO any_val ROUTE TO any_id link_dataspace
+	KEY RANGE any_id FROM any_val TO any_val ROUTE TO any_id DATASPACE any_id
 	{
-		$$ = &KeyRangeDefinition{LowerBound: []byte($5), UpperBound: []byte($7), ShardID: $10, KeyRangeID: $3, Dataspace: $11}
+		$$ = &KeyRangeDefinition{LowerBound: []byte($5), UpperBound: []byte($7), ShardID: $10, KeyRangeID: $3, Dataspace: $12}
 	}
 	|
-	KEY RANGE FROM any_val TO any_val ROUTE TO any_id link_dataspace
+	KEY RANGE FROM any_val TO any_val ROUTE TO any_id DATASPACE any_id
 	{
 		str, err := randomHex(6)
 		if err != nil {
 			panic(err)
 		}
-		$$ = &KeyRangeDefinition{LowerBound: []byte($4), UpperBound: []byte($6), ShardID: $9, KeyRangeID: "kr"+str, Dataspace: $10}
+		$$ = &KeyRangeDefinition{LowerBound: []byte($4), UpperBound: []byte($6), ShardID: $9, KeyRangeID: "kr"+str, Dataspace: $11}
 	}
 	|
 	KEY RANGE any_id FROM any_val TO any_val ROUTE TO any_id
