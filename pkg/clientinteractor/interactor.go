@@ -56,6 +56,10 @@ func (pi *PSQLInteractor) CompleteMsg(rowCnt int) error {
 	return nil
 }
 
+func (pi *PSQLInteractor) GetDataspace() string {
+	return pi.cl.DS()
+}
+
 // TEXTOID https://github.com/postgres/postgres/blob/master/src/include/catalog/pg_type.dat#L81
 const TEXTOID = 25
 

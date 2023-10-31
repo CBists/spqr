@@ -689,6 +689,7 @@ func (cl *PsqlClient) StartupMessage() *pgproto3.StartupMessage {
 
 const DefaultUsr = "default"
 const DefaultDB = "default"
+const DefaultDS = "default"
 
 func (cl *PsqlClient) Usr() string {
 	if usr, ok := cl.startupMsg.Parameters["user"]; ok {
@@ -703,6 +704,13 @@ func (cl *PsqlClient) DB() string {
 	}
 
 	return DefaultDB
+}
+
+func (cl *PsqlClient) DS() string {
+	if ds, ok := cl.activeParamSet["dataspace"]; ok {
+		return ds
+	}
+	return DefaultDS
 }
 
 func (cl *PsqlClient) receivepasswd() (string, error) {
@@ -915,6 +923,10 @@ func (f FakeClient) DB() string {
 	return DefaultDB
 }
 
+func (f FakeClient) DS() string {
+	return DefaultDS
+}
+
 func NewFakeClient() *FakeClient {
 	return &FakeClient{}
 }
@@ -949,11 +961,12 @@ func NewNoopClient(clientInfo *routerproto.ClientInfo, rAddr string) NoopClient 
 
 type NoopClient struct {
 	client.Client
-	id     string
-	user   string
-	dbname string
-	shards []shard.Shard
-	rAddr  string
+	id        string
+	user      string
+	dbname    string
+	dataspace string
+	shards    []shard.Shard
+	rAddr     string
 }
 
 func (c NoopClient) ID() string {
@@ -965,6 +978,10 @@ func (c NoopClient) Usr() string {
 }
 
 func (c NoopClient) DB() string {
+	return c.dbname
+}
+
+func (c NoopClient) DS() string {
 	return c.dbname
 }
 

@@ -51,8 +51,8 @@ func (c *CoordinatorService) UnlockKeyRange(ctx context.Context, request *protos
 	return &protos.ModifyReply{}, nil
 }
 
-func (c *CoordinatorService) KeyRangeIDByBounds(ctx context.Context, keyRange *protos.KeyRange) (string, error) {
-	krsqb, err := c.impl.ListKeyRanges(ctx)
+func (c *CoordinatorService) KeyRangeIDByBounds(ctx context.Context, keyRange *protos.KeyRange, dataspace string) (string, error) {
+	krsqb, err := c.impl.ListKeyRanges(ctx, dataspace)
 	if err != nil {
 		return "", err
 	}
