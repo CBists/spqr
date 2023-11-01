@@ -427,18 +427,18 @@ dataspace_define_stmt:
 	}
 
 sharding_rule_define_stmt:
-	SHARDING RULE any_id sharding_rule_table_clause sharding_rule_argument_list link_dataspace
+	SHARDING RULE any_id link_dataspace sharding_rule_table_clause sharding_rule_argument_list
 	{
-		$$ = &ShardingRuleDefinition{ID: $3, TableName: $4, Entries: $5, Dataspace: $6}
+		$$ = &ShardingRuleDefinition{ID: $3, TableName: $5, Entries: $6, Dataspace: $4}
 	}
 	|
-	SHARDING RULE sharding_rule_table_clause sharding_rule_argument_list link_dataspace
+	SHARDING RULE link_dataspace sharding_rule_table_clause sharding_rule_argument_list
 	{
 		str, err := randomHex(6)
 		if err != nil {
 			panic(err)
 		}
-		$$ = &ShardingRuleDefinition{ID:  "shrule"+str, TableName: $3, Entries: $4, Dataspace: $5}
+		$$ = &ShardingRuleDefinition{ID:  "shrule"+str, TableName: $4, Entries: $5, Dataspace: $3}
 	}
 
 sharding_rule_argument_list: sharding_rule_entry
